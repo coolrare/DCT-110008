@@ -30,7 +30,7 @@ export const todoListSearch = (
   const getTextColumnData = prop<'text', string>('text');
   const hasKeyword = includes(keyword);
   const filterByKeyword = ifElse(
-    () => isEmpty(keyword),
+    () => isEmpty(keyword || ''),
     () => true,
     pipe(getTextColumnData, toLower, hasKeyword)
   );

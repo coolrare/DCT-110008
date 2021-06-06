@@ -18,13 +18,16 @@ export class TodoListTableComponent implements OnInit {
   @Input() pageSize = 10;
   @Input() totalCount = 0;
 
-  @Output() todoItemStatusChange = new EventEmitter<TodoItemStatusChangeEvent>();
+  @Output() todoItemStatusChange =
+    new EventEmitter<TodoItemStatusChangeEvent>();
 
   @Output() todoItemDelete = new EventEmitter<string>();
 
   @Output() sortChange = new EventEmitter<SortChangeEvent>();
 
   @Output() pageChange = new EventEmitter<PageChangeEvent>();
+
+  @Output() refreshClick = new EventEmitter();
 
   displayedColumns = ['id', 'done', 'text', 'created', 'action'];
 
@@ -55,5 +58,9 @@ export class TodoListTableComponent implements OnInit {
 
   deleteTodo(id: string) {
     this.todoItemDelete.emit(id);
+  }
+
+  refresh() {
+    this.refreshClick.emit();
   }
 }

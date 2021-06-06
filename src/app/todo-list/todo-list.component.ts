@@ -55,6 +55,10 @@ export class TodoListComponent implements OnInit {
     this.refreshTodoList();
   }
 
+  refresh() {
+    this.refreshTodoList();
+  }
+
   pageChange(event: PageChangeEvent) {
     this.pageNumber = event.pageNumber + 1;
     this.pageSize = event.pageSize;

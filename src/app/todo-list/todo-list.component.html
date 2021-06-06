@@ -12,6 +12,7 @@
   [pageIndex]="pageNumber"
   [pageSize]="pageSize"
   [totalCount]="totalCount"
+  (refreshClick)="refresh()"
   (sortChange)="sortChange($event)"
   (pageChange)="pageChange($event)"
   (todoItemStatusChange)="todoItemStatusChange($event)"

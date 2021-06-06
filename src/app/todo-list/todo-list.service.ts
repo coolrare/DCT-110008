@@ -3,10 +3,12 @@ import { TODO_ITEMS_DATA_SOURCE } from './todo-items-data-source';
 import { TodoItem } from './todo-item';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { delay, tap } from 'rxjs/operators';
 import { todoListSearch } from './todo-list-search';
 import { SortDirection } from './sort-direction';
 import { generate as randomId } from 'shortid';
+
+const REQUEST_DELAY = 500;
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +36,7 @@ export class TodoListService {
       }
     }
 
-    return of(result).pipe(delay(1000));
+    return of(result).pipe(delay(REQUEST_DELAY));
   }
 
   /**
@@ -56,7 +58,19 @@ export class TodoListService {
       this.dataSource
     );
 
-    return of(result).pipe(delay(1000));
+    return of(result).pipe(
+      tap(() =>
+        console.log('搜尋資料中...', {
+          keyword,
+          pageNumber,
+          pageSize,
+          sortColumn,
+          sortDirection,
+        })
+      ),
+      delay(REQUEST_DELAY),
+      tap(() => console.log('搜尋完成'))
+    );
   }
 
   /**
@@ -72,7 +86,11 @@ export class TodoListService {
 
     this.dataSource = [...this.dataSource, item];
 
-    return of(item).pipe(delay(1000));
+    return of(item).pipe(
+      tap(() => console.log('新增代辦事項', text)),
+      delay(REQUEST_DELAY),
+      tap(() => console.log('新增代辦事項完成'))
+    );
   }
 
   /**
@@ -87,7 +105,11 @@ export class TodoListService {
       return [...previous, current];
     }, [] as TodoItem[]);
 
-    return of(this.dataSource.find((item) => item.id === id)).pipe(delay(1000));
+    return of(this.dataSource.find((item) => item.id === id)).pipe(
+      tap(() => console.log('更新代辦事項', { id, done })),
+      delay(REQUEST_DELAY),
+      tap(() => console.log('更新代辦事項完成'))
+    );
   }
 
   /**
@@ -96,6 +118,10 @@ export class TodoListService {
   deleteTodoItem(id: string) {
     this.dataSource = this.dataSource.filter((item) => item.id !== id);
 
-    return of(null).pipe(delay(1000));
+    return of(null).pipe(
+      tap(() => console.log('移除代辦事項', { id })),
+      delay(REQUEST_DELAY),
+      tap(() => console.log('移除代辦事項完成'))
+    );
   }
 }
