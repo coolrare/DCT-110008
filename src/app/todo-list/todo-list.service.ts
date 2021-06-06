@@ -2,11 +2,12 @@ import { Pagination } from './pagination';
 import { TODO_ITEMS_DATA_SOURCE } from './todo-items-data-source';
 import { TodoItem } from './todo-item';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
 import { todoListSearch } from './todo-list-search';
 import { SortDirection } from './sort-direction';
 import { generate as randomId } from 'shortid';
+import { HttpErrorResponse } from '@angular/common/http';
 
 const REQUEST_DELAY = 500;
 
@@ -49,6 +50,16 @@ export class TodoListService {
     sortColumn: keyof TodoItem = 'id',
     sortDirection: SortDirection
   ): Observable<Pagination<TodoItem>> {
+    if (keyword === 'test') {
+      return throwError(
+        new HttpErrorResponse({
+          error: {
+            message: '錯誤: 不可以搜尋 test'
+          },
+          status: 500
+        })
+      ).pipe(delay(1000));
+    }
     const result = todoListSearch(
       keyword,
       pageNumber,

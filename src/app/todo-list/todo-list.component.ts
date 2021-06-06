@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { TodoItemStatusChangeEvent } from './todo-item-status-change-event';
 import { PageChangeEvent } from './page-change-event';
 import { SortChangeEvent } from './sort-change-event';
@@ -43,9 +44,14 @@ export class TodoListComponent implements OnInit {
         this.sortColumn,
         this.sortDirection
       )
-      .subscribe((result) => {
-        this.totalCount = result.totalCount;
-        this.todoList = result.data;
+      .subscribe({
+        next: (result) => {
+          this.totalCount = result.totalCount;
+          this.todoList = result.data;
+        },
+        error: (error: HttpErrorResponse) => {
+          alert(error.error.message);
+        },
       });
   }
 
