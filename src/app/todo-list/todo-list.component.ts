@@ -1,3 +1,4 @@
+import { TodoItemStatusChangeEvent } from './todo-item-status-change-event';
 import { PageChangeEvent } from './page-change-event';
 import { SortChangeEvent } from './sort-change-event';
 import { TodoListAddDialogComponent } from './todo-list-add-dialog/todo-list-add-dialog.component';
@@ -73,7 +74,7 @@ export class TodoListComponent implements OnInit {
       });
   }
 
-  todoItemStatusChange(status: { id: string; done: boolean }) {
+  todoItemStatusChange(status: TodoItemStatusChangeEvent) {
     this.todoListService
       .updateTodoDoneStatus(status.id, status.done)
       .subscribe((item) => {

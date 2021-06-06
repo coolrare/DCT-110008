@@ -1,3 +1,4 @@
+import { TodoItemStatusChangeEvent } from './../todo-item-status-change-event';
 import { PageChangeEvent } from './../page-change-event';
 import { SortChangeEvent } from './../sort-change-event';
 import { TodoItem } from './../todo-item';
@@ -15,10 +16,7 @@ export class TodoListTableComponent implements OnInit {
   @Input() todoList: TodoItem[] = [];
   @Input() totalCount = 0;
 
-  @Output() todoItemStatusChange = new EventEmitter<{
-    id: string;
-    done: boolean;
-  }>();
+  @Output() todoItemStatusChange = new EventEmitter<TodoItemStatusChangeEvent>();
 
   @Output() todoItemDelete = new EventEmitter<string>();
 
