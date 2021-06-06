@@ -29,11 +29,18 @@ export const todoListSearch = (
   // 篩選
   const getTextColumnData = prop<'text', string>('text');
   const hasKeyword = includes(keyword);
+  const itemContainsKeyword = pipe(
+    getTextColumnData,
+    toLower,
+    hasKeyword
+  );
+
   const filterByKeyword = ifElse(
     () => isEmpty(keyword || ''),
     () => true,
-    pipe(getTextColumnData, toLower, hasKeyword)
+    itemContainsKeyword
   );
+
   const filterFn = filter<TodoItem>(filterByKeyword);
 
   // 排序
