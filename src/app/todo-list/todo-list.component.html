@@ -10,6 +10,8 @@
 <app-todo-list-table
   [todoList]="todoList"
   [totalCount]="totalCount"
+  (sortChange)="sortChange($event)"
+  (pageChange)="pageChange($event)"
   (todoItemStatusChange)="todoItemStatusChange($event)"
   (todoItemDelete)="todoItemDelete($event)"
 ></app-todo-list-table>

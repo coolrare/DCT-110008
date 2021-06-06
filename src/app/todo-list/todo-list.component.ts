@@ -1,9 +1,11 @@
+import { PageChangeEvent } from './page-change-event';
+import { SortChangeEvent } from './sort-change-event';
 import { TodoListAddDialogComponent } from './todo-list-add-dialog/todo-list-add-dialog.component';
 import { TodoListService } from './todo-list.service';
 import { TodoItem } from './todo-item';
 import { Component, OnInit } from '@angular/core';
-import { SortDirection } from './sort-direction';
 import { MatDialog } from '@angular/material/dialog';
+import { SortDirection } from './sort-direction';
 
 @Component({
   selector: 'app-todo-list',
@@ -46,6 +48,18 @@ export class TodoListComponent implements OnInit {
       });
   }
 
+  sortChange(event: SortChangeEvent) {
+    this.sortColumn = event.sortColumn;
+    this.sortDirection = event.sortDirection;
+    this.refreshTodoList();
+  }
+
+  pageChange(event: PageChangeEvent) {
+    this.pageNumber = event.pageNumber;
+    this.pageSize = event.pageSize;
+    this.refreshTodoList();
+  }
+
   displayTodoDialog() {
     this.dialog
       .open(TodoListAddDialogComponent)
@@ -67,11 +81,9 @@ export class TodoListComponent implements OnInit {
       });
   }
 
-  todoItemDelete(id: string){
-    this.todoListService
-      .deleteTodoItem(id)
-      .subscribe(() => {
-        this.refreshTodoList();
-      });
+  todoItemDelete(id: string) {
+    this.todoListService.deleteTodoItem(id).subscribe(() => {
+      this.refreshTodoList();
+    });
   }
 }

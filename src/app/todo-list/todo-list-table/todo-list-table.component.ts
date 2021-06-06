@@ -1,6 +1,8 @@
+import { PageChangeEvent } from './../page-change-event';
+import { SortChangeEvent } from './../sort-change-event';
 import { TodoItem } from './../todo-item';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MatSort, Sort, SortDirection } from '@angular/material/sort';
+import { Sort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 
@@ -20,15 +22,9 @@ export class TodoListTableComponent implements OnInit {
 
   @Output() todoItemDelete = new EventEmitter<string>();
 
-  @Output() sortChange = new EventEmitter<{
-    sortColumn: string;
-    sortDirection: string;
-  }>();
+  @Output() sortChange = new EventEmitter<SortChangeEvent>();
 
-  @Output() pageChange = new EventEmitter<{
-    pageNumber: number;
-    pageSize: number;
-  }>();
+  @Output() pageChange = new EventEmitter<PageChangeEvent>();
 
   displayedColumns = ['id', 'done', 'text', 'created', 'action'];
 
@@ -38,7 +34,7 @@ export class TodoListTableComponent implements OnInit {
 
   sort(sortData: Sort) {
     this.sortChange.emit({
-      sortColumn: sortData.active,
+      sortColumn: sortData.active as keyof TodoItem,
       sortDirection: sortData.direction,
     });
   }
