@@ -4,8 +4,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatOptionModule } from '@angular/material/core';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -15,9 +16,10 @@ import { TodoListRoutingModule } from './todo-list-routing.module';
 import { TodoListTableComponent } from './todo-list-table/todo-list-table.component';
 import { TodoListComponent } from './todo-list.component';
 import { TodoListSearchComponent } from './todo-list-search/todo-list-search.component';
+import { TodoListAddDialogComponent } from './todo-list-add-dialog/todo-list-add-dialog.component';
 
 @NgModule({
-  declarations: [TodoListComponent, TodoListTableComponent, TodoListSearchComponent],
+  declarations: [TodoListComponent, TodoListTableComponent, TodoListSearchComponent, TodoListAddDialogComponent],
   imports: [
     CommonModule,
     TodoListRoutingModule,
@@ -31,7 +33,8 @@ import { TodoListSearchComponent } from './todo-list-search/todo-list-search.com
     MatButtonModule,
     MatIconModule,
     MatSortModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatDialogModule
   ],
 })
 export class TodoListModule {}

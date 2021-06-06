@@ -19,7 +19,7 @@
 
   <ng-container matColumnDef="created">
     <th mat-sort-header="created" mat-header-cell *matHeaderCellDef>建立日期</th>
-    <td mat-cell *matCellDef="let element">{{ element.created }}</td>
+    <td mat-cell *matCellDef="let element">{{ element.created | date:'yyyy-MM-dd hh:mm:ss' }}</td>
   </ng-container>
 
   <ng-container matColumnDef="action">

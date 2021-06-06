@@ -1,7 +1,9 @@
+import { TodoListAddDialogComponent } from './todo-list-add-dialog/todo-list-add-dialog.component';
 import { TodoListService } from './todo-list.service';
 import { TodoItem } from './todo-item';
 import { Component, OnInit } from '@angular/core';
 import { SortDirection } from './sort-direction';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-todo-list',
@@ -9,7 +11,6 @@ import { SortDirection } from './sort-direction';
   styleUrls: ['./todo-list.component.css'],
 })
 export class TodoListComponent implements OnInit {
-
   suggestList: string[] = [];
 
   totalCount = 0;
@@ -21,9 +22,29 @@ export class TodoListComponent implements OnInit {
   pageNumber = 1;
   pageSize = 10;
 
-  constructor(private todoListService: TodoListService) {}
+  constructor(
+    private todoListService: TodoListService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
+    this.refreshTodoList();
+  }
+
+  displayTodoDialog() {
+    this.dialog
+      .open(TodoListAddDialogComponent)
+      .afterClosed()
+      .subscribe((text) => {
+        if (text !== '') {
+          this.todoListService.addTodo(text).subscribe(() => {
+            this.refreshTodoList();
+          });
+        }
+      });
+  }
+
+  refreshTodoList() {
     this.todoListService
       .getTodoList(
         this.keyword,

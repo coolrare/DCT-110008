@@ -6,11 +6,14 @@ import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { todoListSearch } from './todo-list-search';
 import { SortDirection } from './sort-direction';
+import { generate as randomId } from 'shortid';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TodoListService {
+  dataSource = [...TODO_ITEMS_DATA_SOURCE];
+
   constructor() {}
 
   /**
@@ -22,8 +25,8 @@ export class TodoListService {
   getSuggestList(keyword: string, fetchCount = 10): Observable<string[]> {
     const result = [];
 
-    for (let i = 0; i < TODO_ITEMS_DATA_SOURCE.length; ++i) {
-      const item = TODO_ITEMS_DATA_SOURCE[i];
+    for (let i = 0; i < this.dataSource.length; ++i) {
+      const item = this.dataSource[i];
 
       if (item.text.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
         result.push(item.text);
@@ -50,9 +53,22 @@ export class TodoListService {
       pageSize,
       sortColumn,
       sortDirection,
-      TODO_ITEMS_DATA_SOURCE
+      this.dataSource
     );
 
     return of(result).pipe(delay(100));
+  }
+
+  addTodo(text: any) {
+    const item = {
+      id: randomId(),
+      text: text,
+      done: false,
+      created: new Date().getTime(),
+    };
+
+    this.dataSource = [...this.dataSource, item];
+
+    return of(item).pipe(delay(100));
   }
 }
