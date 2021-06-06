@@ -5,7 +5,10 @@
   </button>
 </div>
 
-<app-todo-list-search (searchClick)="search($event)"></app-todo-list-search>
+<app-todo-list-search
+  [suggestList]="suggestList"
+  (keywordChange)="setSuggestList($event)"
+  (searchClick)="search($event)"></app-todo-list-search>
 
 <app-todo-list-table
   [todoList]="todoList"

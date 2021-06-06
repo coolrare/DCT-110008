@@ -35,6 +35,12 @@ export class TodoListComponent implements OnInit {
     this.refreshTodoList();
   }
 
+  setSuggestList(keyword: string) {
+    this.todoListService.getSuggestList(keyword).subscribe((result) => {
+      this.suggestList = result;
+    });
+  }
+
   refreshTodoList() {
     this.todoListService
       .getTodoList(

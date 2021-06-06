@@ -37,7 +37,11 @@ export class TodoListService {
       }
     }
 
-    return of(result).pipe(delay(REQUEST_DELAY));
+    return of(result).pipe(
+      tap(() => console.log('搜尋建議關鍵字', keyword)),
+      delay(REQUEST_DELAY),
+      tap(() => console.log('搜尋完成'))
+    );
   }
 
   /**
@@ -54,9 +58,9 @@ export class TodoListService {
       return throwError(
         new HttpErrorResponse({
           error: {
-            message: '錯誤: 不可以搜尋 test'
+            message: '錯誤: 不可以搜尋 test',
           },
-          status: 500
+          status: 500,
         })
       ).pipe(delay(1000));
     }
@@ -71,7 +75,7 @@ export class TodoListService {
 
     return of(result).pipe(
       tap(() =>
-        console.log('搜尋資料中...', {
+        console.log('搜尋資料中', {
           keyword,
           pageNumber,
           pageSize,
