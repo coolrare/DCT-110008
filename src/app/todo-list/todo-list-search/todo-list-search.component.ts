@@ -9,7 +9,7 @@ import { TodoItem } from '../todo-item';
   styleUrls: ['./todo-list-search.component.css'],
 })
 export class TodoListSearchComponent implements OnInit {
-  @Output() keywordChange = new EventEmitter<string>();
+  @Output() searchClick = new EventEmitter<string>();
 
   keywordControl = new FormControl();
 
@@ -26,6 +26,6 @@ export class TodoListSearchComponent implements OnInit {
   }
 
   search() {
-    this.keywordChange.emit(this.keywordControl.value);
+    this.searchClick.emit(this.keywordControl.value);
   }
 }

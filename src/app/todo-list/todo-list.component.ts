@@ -56,7 +56,7 @@ export class TodoListComponent implements OnInit {
   }
 
   pageChange(event: PageChangeEvent) {
-    this.pageNumber = event.pageNumber;
+    this.pageNumber = event.pageNumber + 1;
     this.pageSize = event.pageSize;
     this.refreshTodoList();
   }
@@ -72,6 +72,16 @@ export class TodoListComponent implements OnInit {
           });
         }
       });
+  }
+
+  search(keyword: string) {
+    this.sortColumn = 'created';
+    this.sortDirection = 'desc';
+    this.pageNumber = 1;
+    this.pageSize = 10;
+
+    this.keyword = keyword;
+    this.refreshTodoList();
   }
 
   todoItemStatusChange(status: TodoItemStatusChangeEvent) {

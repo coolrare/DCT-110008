@@ -52,7 +52,11 @@ export const todoListSearch = (
   );
 
   // 組合所有 functions
-  const fn = pipe<TodoItem[], TodoItem[], TodoItem[]>(sortFn, paginationFn);
+  const fn = pipe<TodoItem[], TodoItem[], TodoItem[], TodoItem[]>(
+    filterFn,
+    sortFn,
+    paginationFn
+  );
 
   return {
     totalCount: length(filterFn(dataSource)),

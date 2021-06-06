@@ -14,6 +14,8 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 })
 export class TodoListTableComponent implements OnInit {
   @Input() todoList: TodoItem[] = [];
+  @Input() pageIndex = 1;
+  @Input() pageSize = 10;
   @Input() totalCount = 0;
 
   @Output() todoItemStatusChange = new EventEmitter<TodoItemStatusChangeEvent>();
