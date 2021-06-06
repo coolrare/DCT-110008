@@ -6,7 +6,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
 import { todoListSearch } from './todo-list-search';
 import { SortDirection } from './sort-direction';
-import { generate as randomId } from 'shortid';
+import { nanoid as randomId } from 'nanoid';
 import { HttpErrorResponse } from '@angular/common/http';
 
 const REQUEST_DELAY = 500;
