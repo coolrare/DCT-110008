@@ -1,11 +1,5 @@
 <h1>Todo List</h1>
 
-<mat-form-field>
-  <input type="text" placeholder="關鍵字" matInput [formControl]="keyword" [matAutocomplete]="autocomplete" />
+<app-todo-list-search></app-todo-list-search>
 
-  <mat-autocomplete #autocomplete="matAutocomplete">
-    <mat-option *ngFor="let item of suggestList" [value]="item.text">
-      {{ item.text }}
-    </mat-option>
-  </mat-autocomplete>
-</mat-form-field>
+<app-todo-list-table [todoList]="todoList" [totalCount]="totalCount"></app-todo-list-table>

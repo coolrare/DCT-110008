@@ -1,7 +1,7 @@
 import { TodoListService } from './todo-list.service';
 import { TodoItem } from './todo-item';
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { SortDirection } from './sort-direction';
 
 @Component({
   selector: 'app-todo-list',
@@ -9,15 +9,32 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./todo-list.component.css'],
 })
 export class TodoListComponent implements OnInit {
-  keyword = new FormControl();
 
-  suggestList: TodoItem[] = [];
+  suggestList: string[] = [];
+
+  totalCount = 0;
+  todoList: TodoItem[] = [];
+
+  keyword = '';
+  sortColumn: keyof TodoItem = 'created';
+  sortDirection: SortDirection = 'desc';
+  pageNumber = 1;
+  pageSize = 10;
 
   constructor(private todoListService: TodoListService) {}
 
   ngOnInit(): void {
-    this.keyword.valueChanges.subscribe((keyword) => {
-      this.suggestList = this.todoListService.getSuggestList(keyword);
-    });
+    this.todoListService
+      .getTodoList(
+        this.keyword,
+        this.pageNumber,
+        this.pageSize,
+        this.sortColumn,
+        this.sortDirection
+      )
+      .subscribe((result) => {
+        this.totalCount = result.totalCount;
+        this.todoList = result.data;
+      });
   }
 }

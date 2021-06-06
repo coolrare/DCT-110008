@@ -1,0 +1,39 @@
+
+<table mat-table [dataSource]="todoList" matSort (matSortChange)="sort($event)" class="todo-list-table">
+  <ng-container matColumnDef="id">
+    <th mat-sort-header="id" mat-header-cell *matHeaderCellDef>ID</th>
+    <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="done">
+    <th mat-sort-header="done" mat-header-cell *matHeaderCellDef>完成</th>
+    <td mat-cell *matCellDef="let element">
+      <mat-checkbox [checked]="element.done"></mat-checkbox>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="text">
+    <th mat-sort-header="text" mat-header-cell *matHeaderCellDef>待辦事項</th>
+    <td mat-cell *matCellDef="let element">{{ element.text }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="created">
+    <th mat-sort-header="created" mat-header-cell *matHeaderCellDef>建立日期</th>
+    <td mat-cell *matCellDef="let element">{{ element.created }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="action">
+    <th mat-header-cell *matHeaderCellDef>&nbsp;</th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-mini-fab color="warn">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<mat-paginator [length]="totalCount" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" (page)="page($event)">
+</mat-paginator>
