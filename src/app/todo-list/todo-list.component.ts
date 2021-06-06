@@ -31,19 +31,6 @@ export class TodoListComponent implements OnInit {
     this.refreshTodoList();
   }
 
-  displayTodoDialog() {
-    this.dialog
-      .open(TodoListAddDialogComponent)
-      .afterClosed()
-      .subscribe((text) => {
-        if (text !== '') {
-          this.todoListService.addTodo(text).subscribe(() => {
-            this.refreshTodoList();
-          });
-        }
-      });
-  }
-
   refreshTodoList() {
     this.todoListService
       .getTodoList(
@@ -56,6 +43,35 @@ export class TodoListComponent implements OnInit {
       .subscribe((result) => {
         this.totalCount = result.totalCount;
         this.todoList = result.data;
+      });
+  }
+
+  displayTodoDialog() {
+    this.dialog
+      .open(TodoListAddDialogComponent)
+      .afterClosed()
+      .subscribe((text) => {
+        if (text !== '') {
+          this.todoListService.addTodo(text).subscribe((item) => {
+            this.refreshTodoList();
+          });
+        }
+      });
+  }
+
+  todoItemStatusChange(status: { id: string; done: boolean }) {
+    this.todoListService
+      .updateTodoDoneStatus(status.id, status.done)
+      .subscribe((item) => {
+        this.refreshTodoList();
+      });
+  }
+
+  todoItemDelete(id: string){
+    this.todoListService
+      .deleteTodoItem(id)
+      .subscribe(() => {
+        this.refreshTodoList();
       });
   }
 }

@@ -7,4 +7,9 @@
 
 <app-todo-list-search></app-todo-list-search>
 
-<app-todo-list-table [todoList]="todoList" [totalCount]="totalCount"></app-todo-list-table>
+<app-todo-list-table
+  [todoList]="todoList"
+  [totalCount]="totalCount"
+  (todoItemStatusChange)="todoItemStatusChange($event)"
+  (todoItemDelete)="todoItemDelete($event)"
+></app-todo-list-table>

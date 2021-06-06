@@ -2,6 +2,7 @@ import { TodoItem } from './../todo-item';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatSort, Sort, SortDirection } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-todo-list-table',
@@ -11,6 +12,13 @@ import { PageEvent } from '@angular/material/paginator';
 export class TodoListTableComponent implements OnInit {
   @Input() todoList: TodoItem[] = [];
   @Input() totalCount = 0;
+
+  @Output() todoItemStatusChange = new EventEmitter<{
+    id: string;
+    done: boolean;
+  }>();
+
+  @Output() todoItemDelete = new EventEmitter<string>();
 
   @Output() sortChange = new EventEmitter<{
     sortColumn: string;
@@ -31,14 +39,25 @@ export class TodoListTableComponent implements OnInit {
   sort(sortData: Sort) {
     this.sortChange.emit({
       sortColumn: sortData.active,
-      sortDirection: sortData.direction
+      sortDirection: sortData.direction,
     });
   }
 
-  page(pageEvent: PageEvent){
+  page(pageEvent: PageEvent) {
     this.pageChange.emit({
       pageNumber: pageEvent.pageIndex,
-      pageSize: pageEvent.pageSize
+      pageSize: pageEvent.pageSize,
     });
+  }
+
+  changeTodoStatus(id: string, changeStatus: MatCheckboxChange) {
+    this.todoItemStatusChange.emit({
+      id,
+      done: changeStatus.checked,
+    });
+  }
+
+  deleteTodo(id: string) {
+    this.todoItemDelete.emit(id);
   }
 }

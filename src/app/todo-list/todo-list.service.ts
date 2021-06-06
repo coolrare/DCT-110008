@@ -18,9 +18,6 @@ export class TodoListService {
 
   /**
    * 取得自動完成建議清單
-   *
-   * @param keyword 關鍵字
-   * @returns
    */
   getSuggestList(keyword: string, fetchCount = 10): Observable<string[]> {
     const result = [];
@@ -37,9 +34,12 @@ export class TodoListService {
       }
     }
 
-    return of(result).pipe(delay(100));
+    return of(result).pipe(delay(1000));
   }
 
+  /**
+   * 取得待辦事項清單
+   */
   getTodoList(
     keyword: string,
     pageNumber: number,
@@ -56,9 +56,12 @@ export class TodoListService {
       this.dataSource
     );
 
-    return of(result).pipe(delay(100));
+    return of(result).pipe(delay(1000));
   }
 
+  /**
+   * 新增待辦事項
+   */
   addTodo(text: any) {
     const item = {
       id: randomId(),
@@ -69,6 +72,30 @@ export class TodoListService {
 
     this.dataSource = [...this.dataSource, item];
 
-    return of(item).pipe(delay(100));
+    return of(item).pipe(delay(1000));
+  }
+
+  /**
+   * 更新待辦事項狀態
+   */
+  updateTodoDoneStatus(id: string, done: boolean) {
+    this.dataSource = this.dataSource.reduce((previous, current) => {
+      if (current.id === id) {
+        return [...previous, { ...current, done }];
+      }
+
+      return [...previous, current];
+    }, [] as TodoItem[]);
+
+    return of(this.dataSource.find((item) => item.id === id)).pipe(delay(1000));
+  }
+
+  /**
+   * 刪除待辦事項
+   */
+  deleteTodoItem(id: string) {
+    this.dataSource = this.dataSource.filter((item) => item.id !== id);
+
+    return of(null).pipe(delay(1000));
   }
 }
