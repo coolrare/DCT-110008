@@ -1,3 +1,5 @@
+import { switchMap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TodoItemStatusChangeEvent } from './todo-item-status-change-event';
 import { PageChangeEvent } from './page-change-event';
@@ -21,10 +23,14 @@ export class TodoListComponent implements OnInit {
   todoList: TodoItem[] = [];
 
   keyword = '';
-  sortColumn: keyof TodoItem = 'created';
-  sortDirection: SortDirection = 'desc';
-  pageNumber = 1;
-  pageSize = 10;
+  sort: SortChangeEvent = {
+    sortColumn: 'created',
+    sortDirection: 'desc'
+  };
+  pagination: PageChangeEvent = {
+    pageNumber: 1,
+    pageSize: 10
+  };
 
   constructor(
     private todoListService: TodoListService,
@@ -45,10 +51,8 @@ export class TodoListComponent implements OnInit {
     this.todoListService
       .getTodoList(
         this.keyword,
-        this.pageNumber,
-        this.pageSize,
-        this.sortColumn,
-        this.sortDirection
+        this.pagination,
+        this.sort
       )
       .subscribe({
         next: (result) => {
@@ -62,8 +66,7 @@ export class TodoListComponent implements OnInit {
   }
 
   sortChange(event: SortChangeEvent) {
-    this.sortColumn = event.sortColumn;
-    this.sortDirection = event.sortDirection;
+    this.sort = { ...event };
     this.refreshTodoList();
   }
 
@@ -72,8 +75,10 @@ export class TodoListComponent implements OnInit {
   }
 
   pageChange(event: PageChangeEvent) {
-    this.pageNumber = event.pageNumber + 1;
-    this.pageSize = event.pageSize;
+    this.pagination = {
+      pageNumber: event.pageNumber + 1,
+      pageSize : event.pageSize
+    };
     this.refreshTodoList();
   }
 
@@ -90,13 +95,21 @@ export class TodoListComponent implements OnInit {
       });
   }
 
-  search(keyword: string) {
-    this.sortColumn = 'created';
-    this.sortDirection = 'desc';
-    this.pageNumber = 1;
-    this.pageSize = 10;
+  resetSortAndPage() {
+    this.sort = {
+      sortColumn: 'created',
+      sortDirection: 'desc'
+    };
 
+    this.pagination = {
+      pageNumber: 1,
+      pageSize: 10
+    };
+  }
+
+  search(keyword: string) {
     this.keyword = keyword;
+    this.resetSortAndPage();
     this.refreshTodoList();
   }
 

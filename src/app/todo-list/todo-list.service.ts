@@ -1,3 +1,5 @@
+import { SortChangeEvent } from './sort-change-event';
+import { PageChangeEvent } from './page-change-event';
 import { Pagination } from './pagination';
 import { TODO_ITEMS_DATA_SOURCE } from './todo-items-data-source';
 import { TodoItem } from './todo-item';
@@ -49,10 +51,8 @@ export class TodoListService {
    */
   getTodoList(
     keyword: string,
-    pageNumber: number,
-    pageSize: number,
-    sortColumn: keyof TodoItem = 'id',
-    sortDirection: SortDirection
+    pagination: PageChangeEvent,
+    sort: SortChangeEvent
   ): Observable<Pagination<TodoItem>> {
     if (keyword === 'test') {
       return throwError(
@@ -66,10 +66,10 @@ export class TodoListService {
     }
     const result = todoListSearch(
       keyword,
-      pageNumber,
-      pageSize,
-      sortColumn,
-      sortDirection,
+      pagination.pageNumber,
+      pagination.pageSize,
+      sort.sortColumn,
+      sort.sortDirection,
       this.dataSource
     );
 
@@ -77,10 +77,10 @@ export class TodoListService {
       tap(() =>
         console.log('搜尋資料中', {
           keyword,
-          pageNumber,
-          pageSize,
-          sortColumn,
-          sortDirection,
+          pageNumber: pagination.pageNumber,
+          pageSize: pagination.pageSize,
+          sortColumn: sort.sortColumn,
+          sortDirection: sort.sortDirection
         })
       ),
       delay(REQUEST_DELAY),

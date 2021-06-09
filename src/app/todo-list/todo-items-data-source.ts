@@ -580,13 +580,13 @@ export const TODO_ITEMS_DATA_SOURCE: TodoItem[] = [
   {
     id: '_MSsz5n6VAsX5qv7MdEN6',
     text: 'Temporibus enim facilis.',
-    done: false,
+    done: true,
     created: 1622923200000,
   },
   {
     id: 'U-JWdCpmCEROjoq916sRP',
     text: 'Debitis autem sed maiores architecto est.',
-    done: false,
+    done: true,
     created: 1622923800000,
   },
   {
@@ -598,7 +598,7 @@ export const TODO_ITEMS_DATA_SOURCE: TodoItem[] = [
   {
     id: '7qVttgyK5_PUGPzs1Ax0z',
     text: 'Dolorum sint natus aut dolores rerum voluptate hic doloribus explicabo.',
-    done: false,
+    done: true,
     created: 1622925000000,
   },
 ];

@@ -12,8 +12,8 @@
 
 <app-todo-list-table
   [todoList]="todoList"
-  [pageIndex]="pageNumber"
-  [pageSize]="pageSize"
+  [pageIndex]="pagination.pageNumber"
+  [pageSize]="pagination.pageSize"
   [totalCount]="totalCount"
   (refreshClick)="refresh()"
   (sortChange)="sortChange($event)"
