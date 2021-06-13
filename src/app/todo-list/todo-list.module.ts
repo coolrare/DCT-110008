@@ -10,6 +10,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { TodoListRoutingModule } from './todo-list-routing.module';
@@ -34,7 +35,8 @@ import { TodoListAddDialogComponent } from './todo-list-add-dialog/todo-list-add
     MatIconModule,
     MatSortModule,
     MatPaginatorModule,
-    MatDialogModule
+    MatDialogModule,
+    MatProgressSpinnerModule
   ],
 })
 export class TodoListModule {}

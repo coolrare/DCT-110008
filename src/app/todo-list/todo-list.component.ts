@@ -1,5 +1,3 @@
-import { switchMap } from 'rxjs/operators';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TodoItemStatusChangeEvent } from './todo-item-status-change-event';
 import { PageChangeEvent } from './page-change-event';
@@ -9,7 +7,6 @@ import { TodoListService } from './todo-list.service';
 import { TodoItem } from './todo-item';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { SortDirection } from './sort-direction';
 
 @Component({
   selector: 'app-todo-list',
@@ -32,6 +29,8 @@ export class TodoListComponent implements OnInit {
     pageSize: 10
   };
 
+  loading = false;
+
   constructor(
     private todoListService: TodoListService,
     private dialog: MatDialog
@@ -48,6 +47,7 @@ export class TodoListComponent implements OnInit {
   }
 
   refreshTodoList() {
+    this.loading = true;
     this.todoListService
       .getTodoList(
         this.keyword,
@@ -58,6 +58,7 @@ export class TodoListComponent implements OnInit {
         next: (result) => {
           this.totalCount = result.totalCount;
           this.todoList = result.data;
+          this.loading = false;
         },
         error: (error: HttpErrorResponse) => {
           alert(error.error.message);
