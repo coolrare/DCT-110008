@@ -12,6 +12,10 @@ const routes: Routes = [
     loadChildren: () =>
       import('./todo-list/todo-list.module').then((m) => m.TodoListModule),
   },
+  {
+    path: 'settings',
+    loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule)
+  }
 ];
 
 @NgModule({
