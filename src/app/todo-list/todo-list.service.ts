@@ -25,19 +25,24 @@ export class TodoListService {
    * 取得自動完成建議清單
    */
   getSuggestList(keyword: string, fetchCount = 10): Observable<string[]> {
-    const result = [];
+    // const result = [];
 
-    for (let i = 0; i < this.dataSource.length; ++i) {
-      const item = this.dataSource[i];
+    // for (let i = 0; i < this.dataSource.length; ++i) {
+    //   const item = this.dataSource[i];
 
-      if (item.text.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
-        result.push(item.text);
-      }
+    //   if (item.text.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
+    //     result.push(item.text);
+    //   }
 
-      if (result.length >= fetchCount) {
-        break;
-      }
-    }
+    //   if (result.length >= fetchCount) {
+    //     break;
+    //   }
+    // }
+
+    const result = this.dataSource
+      .filter(item => item.text.toLowerCase().indexOf(keyword.toLowerCase()) !== -1)
+      .slice(0, fetchCount)
+      .map(item => item.text);
 
     return of(result).pipe(
       tap(() => console.log('搜尋建議關鍵字', keyword)),
