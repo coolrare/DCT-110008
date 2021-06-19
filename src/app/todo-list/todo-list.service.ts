@@ -39,8 +39,11 @@ export class TodoListService {
     //   }
     // }
 
+    const byKeyword = (item: any) =>
+      item.text.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
+
     const result = this.dataSource
-      .filter(item => item.text.toLowerCase().indexOf(keyword.toLowerCase()) !== -1)
+      .filter(byKeyword)
       .slice(0, fetchCount)
       .map(item => item.text);
 
