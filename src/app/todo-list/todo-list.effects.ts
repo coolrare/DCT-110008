@@ -2,7 +2,7 @@ import { TodoListService } from './todo-list.service';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 
-import { concatMap, switchMap, map } from 'rxjs/operators';
+import { concatMap, switchMap, map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Observable, EMPTY } from 'rxjs';
 
 import * as TodoListActions from './todo-list.actions';
@@ -24,7 +24,11 @@ export class TodoListEffects {
   getSuggestList$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(TodoListActions.querySuggestList),
-      switchMap(action => this.todoListService.getSuggestList(action.keyword)),
+      map(action => action.keyword),
+      filter(keyword => keyword.length >= 3),
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(keyword => this.todoListService.getSuggestList(keyword)),
       map((result: string[]) => TodoListActions.updateSuggestList({ suggestList: result }))
     );
   });
