@@ -105,7 +105,10 @@ export class TodoListComponent implements OnInit {
   }
 
   pageChange(event: PageChangeEvent) {
-    this.pagination$.next(event);
+    this.pagination$.next({
+      pageNumber: event.pageNumber + 1,
+      pageSize: event.pageSize
+    });
   }
 
   displayTodoDialog() {
