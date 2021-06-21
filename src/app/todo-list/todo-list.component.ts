@@ -1,3 +1,5 @@
+import { switchMap, startWith } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TodoItemStatusChangeEvent } from './todo-item-status-change-event';
 import { PageChangeEvent } from './page-change-event';
@@ -14,7 +16,11 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./todo-list.component.css'],
 })
 export class TodoListComponent implements OnInit {
-  suggestList: string[] = [];
+  keyword$ = new Subject<string>();
+  suggestList$ = this.keyword$.pipe(
+    switchMap(keyword => this.todoListService.getSuggestList(keyword)),
+    startWith([])
+  );
 
   totalCount = 0;
   todoList: TodoItem[] = [];
@@ -31,6 +37,7 @@ export class TodoListComponent implements OnInit {
 
   loading = false;
 
+
   constructor(
     private todoListService: TodoListService,
     private dialog: MatDialog
@@ -41,9 +48,7 @@ export class TodoListComponent implements OnInit {
   }
 
   setSuggestList(keyword: string) {
-    this.todoListService.getSuggestList(keyword).subscribe((result) => {
-      this.suggestList = result;
-    });
+    this.keyword$.next(keyword);
   }
 
   refreshTodoList() {

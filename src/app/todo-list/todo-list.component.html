@@ -6,7 +6,7 @@
 </div>
 
 <app-todo-list-search
-  [suggestList]="suggestList"
+  [suggestList]="(suggestList$ | async)!"
   (keywordChange)="setSuggestList($event)"
   (searchClick)="search($event)"></app-todo-list-search>
 
