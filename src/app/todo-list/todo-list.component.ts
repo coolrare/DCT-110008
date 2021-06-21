@@ -48,7 +48,7 @@ export class TodoListComponent implements OnInit {
     startWith(0)
   );
 
-  loading$ = new BehaviorSubject<boolean>(false);
+  loading$ = this.store.select(TodoListSelectors.selectLoadingState);
 
   totalCount = 0;
   todoList: TodoItem[] = [];
@@ -87,27 +87,19 @@ export class TodoListComponent implements OnInit {
         pagination,
         sort
       }));
-    })
+    });
+
+    this
+      .store
+      .select(TodoListSelectors.selectErrorMessageState)
+      .pipe(filter(message => !!message))
+      .subscribe(message => {
+        alert(message);
+      });
   }
 
   setSuggestList(keyword: string) {
     this.store.dispatch(TodoListActions.querySuggestList({ keyword }));
-  }
-
-  getTodoListRequest(keyword: string, pagination: PageChangeEvent, sort: SortChangeEvent) {
-    return this
-      .todoListService
-      .getTodoList(keyword, pagination, sort)
-        .pipe(
-          catchError((error: HttpErrorResponse) => {
-            alert(error.error.message);
-            return of({
-              totalCount: 0,
-              data: []
-            })
-          }),
-          finalize(() => this.loading$.next(false))
-        );
   }
 
   sortChange(event: SortChangeEvent) {

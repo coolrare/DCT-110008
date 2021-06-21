@@ -17,6 +17,11 @@ export const queryTodoItems = createAction(
   props<{ keyword: string, sort: SortChangeEvent, pagination: PageChangeEvent }>()
 );
 
+export const queryTodoItemsFail = createAction(
+  '[TodoList] Query Todo Items Fail',
+  props<{ message: string }>()
+);
+
 export const updateTodoListItems = createAction(
   '[TodoList] Update Todo Items',
   props<Pagination<TodoItem>>()

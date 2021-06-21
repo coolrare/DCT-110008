@@ -6,8 +6,10 @@ import { Pagination } from './pagination';
 export const todoListFeatureKey = 'todoList';
 
 export interface State {
-  todoItems: Pagination<TodoItem>,
-  suggestList: string[]
+  todoItems: Pagination<TodoItem>;
+  suggestList: string[];
+  loading: boolean;
+  errorMessage: string;
 }
 
 export const initialState: State = {
@@ -15,7 +17,9 @@ export const initialState: State = {
     totalCount: 0,
     data: []
   },
-  suggestList: []
+  suggestList: [],
+  loading: false,
+  errorMessage: ''
 };
 
 export const reducer = createReducer(
@@ -32,12 +36,28 @@ export const reducer = createReducer(
       ]
     }
   })),
+  on(TodoListActions.queryTodoItems, (state, action) => ({
+    ...state,
+    loading: true,
+    errorMessage: ''
+  })),
   on(TodoListActions.updateTodoListItems, (state, action) => ({
     ...state,
     todoItems: {
       totalCount: action.totalCount,
       data: action.data
-    }
+    },
+    loading: false,
+    errorMessage: ''
+  })),
+  on(TodoListActions.queryTodoItemsFail, (state, action) => ({
+    ...state,
+    todoItems: {
+      totalCount: 0,
+      data: []
+    },
+    loading: false,
+    errorMessage: action.message
   })),
   on(TodoListActions.updateSuggestList, (state, action) => ({
     ...state,

@@ -1,9 +1,10 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { TodoListService } from './todo-list.service';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 
-import { concatMap, switchMap, map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Observable, EMPTY } from 'rxjs';
+import { concatMap, switchMap, map, filter, debounceTime, distinctUntilChanged, finalize, catchError } from 'rxjs/operators';
+import { Observable, EMPTY, of } from 'rxjs';
 
 import * as TodoListActions from './todo-list.actions';
 
@@ -37,12 +38,15 @@ export class TodoListEffects {
     return this.actions$.pipe(
       ofType(TodoListActions.queryTodoItems),
       debounceTime(0),
-      switchMap(action => this.todoListService.getTodoList(action.keyword, action.pagination, action.sort)),
-      map(result => TodoListActions.updateTodoListItems(result))
+      switchMap(action =>
+        this.todoListService.getTodoList(action.keyword, action.pagination, action.sort)
+          .pipe(
+            map(result => TodoListActions.updateTodoListItems(result)),
+            catchError((error: HttpErrorResponse) => of(TodoListActions.queryTodoItemsFail({ message: error.error.message })))
+          )
+      )
     )
   });
 
-
   constructor(private actions$: Actions, private todoListService: TodoListService) {}
-
 }
