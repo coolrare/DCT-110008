@@ -28,7 +28,7 @@ export const todoListSearch = (
 ): Pagination<TodoItem> => {
   // 篩選
   const getTextColumnData = prop<'text', string>('text');
-  const hasKeyword = pipe(toLower, includes);
+  const hasKeyword = pipe(toLower, includes)(keyword);
   const itemContainsKeyword = pipe(
     getTextColumnData,
     toLower,
