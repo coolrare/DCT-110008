@@ -1,3 +1,4 @@
+import { State } from './todo-list.reducer';
 import { Store } from '@ngrx/store';
 import { switchMap, startWith, filter, distinctUntilChanged, debounceTime, map, shareReplay, tap, finalize, catchError } from 'rxjs/operators';
 import { Subject, combineLatest, BehaviorSubject, of } from 'rxjs';
@@ -11,6 +12,7 @@ import { TodoItem } from './todo-item';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as TodoListActions from './todo-list.actions';
+import { selectTodoListState } from './todo-list.selectors';
 
 @Component({
   selector: 'app-todo-list',
@@ -52,12 +54,12 @@ export class TodoListComponent implements OnInit {
     shareReplay(1)
   );
 
-  todoItems$ = this.todoListQuery$.pipe(
-    map(result => result.data)
+  todoItems$ = this.store.select(selectTodoListState).pipe(
+    map(state => state.todoItems.data)
   );
 
-  totalCount$ = this.todoListQuery$.pipe(
-    map(result => result.totalCount)
+  totalCount$ = this.store.select(selectTodoListState).pipe(
+    map(state => state.todoItems.totalCount)
   );
 
   loading$ = new BehaviorSubject<boolean>(false);

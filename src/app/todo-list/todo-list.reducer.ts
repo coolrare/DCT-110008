@@ -27,7 +27,7 @@ export const reducer = createReducer(
       totalCount: 2,
       data: [
         { id: '1', text: 'Task 1', done: true, created: (new Date()).getTime() },
-        { id: '2', text: 'Task 2', done: true, created: (new Date()).getTime() }
+        { id: '2', text: 'Task 2', done: false, created: (new Date()).getTime() }
       ]
     }
   })),
