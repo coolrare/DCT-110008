@@ -49,6 +49,14 @@ export class TodoListComponent implements OnInit {
     shareReplay(1)
   );
 
+  todoItems$ = this.todoListQuery$.pipe(
+    map(result => result.data)
+  );
+
+  totalCount$ = this.todoListQuery$.pipe(
+    map(result => result.totalCount)
+  );
+
   totalCount = 0;
   todoList: TodoItem[] = [];
 
