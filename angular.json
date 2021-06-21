@@ -107,5 +107,8 @@
       }
     }
   },
-  "defaultProject": "rxjs-in-angular-course"
+  "defaultProject": "rxjs-in-angular-course",
+  "cli": {
+    "defaultCollection": "@ngrx/schematics"
+  }
 }
