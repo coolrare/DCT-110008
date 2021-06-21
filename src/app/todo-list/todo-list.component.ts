@@ -42,12 +42,7 @@ export class TodoListComponent implements OnInit {
   ]).pipe(
     debounceTime(0),
     tap(() => this.loading$.next(true)),
-    switchMap(([keyword, pagination, sort]) =>
-      this.todoListService.getTodoList(keyword, pagination, sort)
-        .pipe(
-          finalize(() => this.loading$.next(false))
-        )
-    ),
+    switchMap(([keyword, pagination, sort]) => this.getTodoListRequest(keyword, pagination, sort)),
     startWith({
       totalCount: 0,
       data: []
@@ -80,7 +75,6 @@ export class TodoListComponent implements OnInit {
 
   loading = false;
 
-
   constructor(
     private todoListService: TodoListService,
     private dialog: MatDialog
@@ -91,6 +85,15 @@ export class TodoListComponent implements OnInit {
 
   setSuggestList(keyword: string) {
     this.keyword$.next(keyword);
+  }
+
+  getTodoListRequest(keyword: string, pagination: PageChangeEvent, sort: SortChangeEvent) {
+    return this
+      .todoListService
+      .getTodoList(keyword, pagination, sort)
+        .pipe(
+          finalize(() => this.loading$.next(false))
+      );
   }
 
   refreshTodoList() {
