@@ -18,6 +18,10 @@ import { TodoListTableComponent } from './todo-list-table/todo-list-table.compon
 import { TodoListComponent } from './todo-list.component';
 import { TodoListSearchComponent } from './todo-list-search/todo-list-search.component';
 import { TodoListAddDialogComponent } from './todo-list-add-dialog/todo-list-add-dialog.component';
+import { StoreModule } from '@ngrx/store';
+import * as fromTodoList from './todo-list.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { TodoListEffects } from './todo-list.effects';
 
 @NgModule({
   declarations: [TodoListComponent, TodoListTableComponent, TodoListSearchComponent, TodoListAddDialogComponent],
@@ -36,7 +40,9 @@ import { TodoListAddDialogComponent } from './todo-list-add-dialog/todo-list-add
     MatSortModule,
     MatPaginatorModule,
     MatDialogModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    StoreModule.forFeature(fromTodoList.todoListFeatureKey, fromTodoList.reducer),
+    EffectsModule.forFeature([TodoListEffects])
   ],
 })
 export class TodoListModule {}
