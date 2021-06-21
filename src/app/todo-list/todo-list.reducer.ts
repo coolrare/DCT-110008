@@ -16,7 +16,6 @@ export const initialState: State = {
   }
 };
 
-
 export const reducer = createReducer(
   initialState,
 
@@ -31,6 +30,12 @@ export const reducer = createReducer(
       ]
     }
   })),
-
+  on(TodoListActions.updateTodoListItems, (state, action) => ({
+    ...state,
+    todoItems: {
+      totalCount: action.totalCount,
+      data: action.data
+    }
+  }))
 );
 
