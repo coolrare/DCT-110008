@@ -115,12 +115,12 @@ export class TodoListComponent implements OnInit {
     this.dialog
       .open(TodoListAddDialogComponent)
       .afterClosed()
-      .subscribe((text) => {
-        if (text !== '') {
-          this.todoListService.addTodo(text).subscribe((item) => {
-            this.refresh();
-          });
-        }
+      .pipe(
+        filter(text => text !== ''),
+        switchMap(text => this.todoListService.addTodo(text))
+      )
+      .subscribe(() => {
+        this.refresh();
       });
   }
 
