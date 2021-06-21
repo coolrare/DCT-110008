@@ -1,5 +1,5 @@
-import { switchMap, startWith, filter, distinctUntilChanged, debounceTime, map, shareReplay, tap, finalize } from 'rxjs/operators';
-import { Subject, combineLatest, BehaviorSubject } from 'rxjs';
+import { switchMap, startWith, filter, distinctUntilChanged, debounceTime, map, shareReplay, tap, finalize, catchError } from 'rxjs/operators';
+import { Subject, combineLatest, BehaviorSubject, of } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TodoItemStatusChangeEvent } from './todo-item-status-change-event';
 import { PageChangeEvent } from './page-change-event';
@@ -92,8 +92,15 @@ export class TodoListComponent implements OnInit {
       .todoListService
       .getTodoList(keyword, pagination, sort)
         .pipe(
+          catchError((error: HttpErrorResponse) => {
+            alert(error.error.message);
+            return of({
+              totalCount: 0,
+              data: []
+            })
+          }),
           finalize(() => this.loading$.next(false))
-      );
+        );
   }
 
   sortChange(event: SortChangeEvent) {
