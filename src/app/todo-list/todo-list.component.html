@@ -22,6 +22,6 @@
   (todoItemDelete)="todoItemDelete($event)"
 ></app-todo-list-table>
 
-<div class="todo-loading" *ngIf="loading">
+<div class="todo-loading" *ngIf="loading$ | async">
   <mat-spinner></mat-spinner>
 </div>

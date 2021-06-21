@@ -1,4 +1,4 @@
-import { switchMap, startWith, filter, distinctUntilChanged, debounceTime, map, shareReplay } from 'rxjs/operators';
+import { switchMap, startWith, filter, distinctUntilChanged, debounceTime, map, shareReplay, tap, finalize } from 'rxjs/operators';
 import { Subject, combineLatest, BehaviorSubject } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TodoItemStatusChangeEvent } from './todo-item-status-change-event';
@@ -41,7 +41,13 @@ export class TodoListComponent implements OnInit {
     this.sort$
   ]).pipe(
     debounceTime(0),
-    switchMap(([keyword, pagination, sort]) => this.todoListService.getTodoList(keyword, pagination, sort)),
+    tap(() => this.loading$.next(true)),
+    switchMap(([keyword, pagination, sort]) =>
+      this.todoListService.getTodoList(keyword, pagination, sort)
+        .pipe(
+          finalize(() => this.loading$.next(false))
+        )
+    ),
     startWith({
       totalCount: 0,
       data: []
@@ -56,6 +62,8 @@ export class TodoListComponent implements OnInit {
   totalCount$ = this.todoListQuery$.pipe(
     map(result => result.totalCount)
   );
+
+  loading$ = new BehaviorSubject<boolean>(false);
 
   totalCount = 0;
   todoList: TodoItem[] = [];
