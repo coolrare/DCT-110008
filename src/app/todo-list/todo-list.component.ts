@@ -96,33 +96,12 @@ export class TodoListComponent implements OnInit {
       );
   }
 
-  refreshTodoList() {
-    // this.searchKeyword$.next('');
-    // this.loading = true;
-    // this.todoListService
-    //   .getTodoList(
-    //     this.keyword,
-    //     this.pagination,
-    //     this.sort
-    //   )
-    //   .subscribe({
-    //     next: (result) => {
-    //       this.totalCount = result.totalCount;
-    //       this.todoList = result.data;
-    //       this.loading = false;
-    //     },
-    //     error: (error: HttpErrorResponse) => {
-    //       alert(error.error.message);
-    //     },
-    //   });
-  }
-
   sortChange(event: SortChangeEvent) {
     this.sort$.next(event);
   }
 
   refresh() {
-    this.refreshTodoList();
+    this.searchKeyword$.next(this.searchKeyword$.value);
   }
 
   pageChange(event: PageChangeEvent) {
@@ -139,7 +118,7 @@ export class TodoListComponent implements OnInit {
       .subscribe((text) => {
         if (text !== '') {
           this.todoListService.addTodo(text).subscribe((item) => {
-            this.refreshTodoList();
+            this.refresh();
           });
         }
       });
@@ -165,13 +144,13 @@ export class TodoListComponent implements OnInit {
     this.todoListService
       .updateTodoDoneStatus(status.id, status.done)
       .subscribe((item) => {
-        this.refreshTodoList();
+        this.refresh();
       });
   }
 
   todoItemDelete(id: string) {
     this.todoListService.deleteTodoItem(id).subscribe(() => {
-      this.refreshTodoList();
+      this.refresh();
     });
   }
 }
