@@ -12,7 +12,7 @@ import { TodoItem } from './todo-item';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as TodoListActions from './todo-list.actions';
-import { selectTodoListState } from './todo-list.selectors';
+import * as TodoListSelectors from './todo-list.selectors';
 
 @Component({
   selector: 'app-todo-list',
@@ -20,8 +20,7 @@ import { selectTodoListState } from './todo-list.selectors';
   styleUrls: ['./todo-list.component.css'],
 })
 export class TodoListComponent implements OnInit {
-  suggestList$ = this.store.select(selectTodoListState).pipe(
-    map(state => state.suggestList),
+  suggestList$ = this.store.select(TodoListSelectors.selectSuggestList).pipe(
     startWith([])
   );
 
@@ -41,12 +40,12 @@ export class TodoListComponent implements OnInit {
     this.sort$
   ]);
 
-  todoItems$ = this.store.select(selectTodoListState).pipe(
-    map(state => state.todoItems.data)
+  todoItems$ = this.store.select(TodoListSelectors.selectTodoItemsData).pipe(
+    startWith([])
   );
 
-  totalCount$ = this.store.select(selectTodoListState).pipe(
-    map(state => state.todoItems.totalCount)
+  totalCount$ = this.store.select(TodoListSelectors.selectTodoItemsTotalCount).pipe(
+    startWith(0)
   );
 
   loading$ = new BehaviorSubject<boolean>(false);
