@@ -1,4 +1,4 @@
-import { switchMap, startWith } from 'rxjs/operators';
+import { switchMap, startWith, filter, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TodoItemStatusChangeEvent } from './todo-item-status-change-event';
@@ -18,6 +18,9 @@ import { MatDialog } from '@angular/material/dialog';
 export class TodoListComponent implements OnInit {
   keyword$ = new Subject<string>();
   suggestList$ = this.keyword$.pipe(
+    filter(keyword => keyword.length >= 3),
+    debounceTime(300),
+    distinctUntilChanged(),
     switchMap(keyword => this.todoListService.getSuggestList(keyword)),
     startWith([])
   );
