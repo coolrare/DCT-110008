@@ -11,10 +11,10 @@
   (searchClick)="search($event)"></app-todo-list-search>
 
 <app-todo-list-table
-  [todoList]="todoList"
-  [pageIndex]="pagination.pageNumber"
-  [pageSize]="pagination.pageSize"
-  [totalCount]="totalCount"
+  [todoList]="(todoListQuery$ | async)!.data"
+  [pageIndex]="(pagination$ | async)!.pageNumber"
+  [pageSize]="(pagination$ | async)!.pageSize"
+  [totalCount]="(todoListQuery$ | async)!.totalCount"
   (refreshClick)="refresh()"
   (sortChange)="sortChange($event)"
   (pageChange)="pageChange($event)"
