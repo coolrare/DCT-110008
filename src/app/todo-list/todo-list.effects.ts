@@ -21,7 +21,7 @@ export class TodoListEffects {
     );
   });
 
-  getSuggestList$ = createEffect(() => {
+  querySuggestList$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(TodoListActions.querySuggestList),
       map(action => action.keyword),
@@ -31,6 +31,15 @@ export class TodoListEffects {
       switchMap(keyword => this.todoListService.getSuggestList(keyword)),
       map((result: string[]) => TodoListActions.updateSuggestList({ suggestList: result }))
     );
+  });
+
+  queryTodoItems$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TodoListActions.queryTodoItems),
+      debounceTime(0),
+      switchMap(action => this.todoListService.getTodoList(action.keyword, action.pagination, action.sort)),
+      map(result => TodoListActions.updateTodoListItems(result))
+    )
   });
 
 

@@ -1,3 +1,5 @@
+import { PageChangeEvent } from './page-change-event';
+import { SortChangeEvent } from './sort-change-event';
 import { Pagination } from './pagination';
 import { createAction, props } from '@ngrx/store';
 import { TodoItem } from './todo-item';
@@ -10,13 +12,18 @@ export const initTodoListItems = createAction(
   '[TodoList] Initial Todo Items'
 );
 
+export const queryTodoItems = createAction(
+  '[TodoList] Query Todo Items',
+  props<{ keyword: string, sort: SortChangeEvent, pagination: PageChangeEvent }>()
+);
+
 export const updateTodoListItems = createAction(
   '[TodoList] Update Todo Items',
   props<Pagination<TodoItem>>()
 );
 
 export const querySuggestList = createAction(
-  '[TodoList] Get Suggest List',
+  '[TodoList] Query Suggest List',
   props<{ keyword: string }>()
 );
 

@@ -20,14 +20,6 @@ import { selectTodoListState } from './todo-list.selectors';
   styleUrls: ['./todo-list.component.css'],
 })
 export class TodoListComponent implements OnInit {
-  // keyword$ = new Subject<string>();
-  // suggestList$ = this.keyword$.pipe(
-  //   filter(keyword => keyword.length >= 3),
-  //   debounceTime(300),
-  //   distinctUntilChanged(),
-  //   switchMap(keyword => this.todoListService.getSuggestList(keyword)),
-  //   startWith([])
-  // );
   suggestList$ = this.store.select(selectTodoListState).pipe(
     map(state => state.suggestList),
     startWith([])
@@ -47,16 +39,7 @@ export class TodoListComponent implements OnInit {
     this.searchKeyword$,
     this.pagination$,
     this.sort$
-  ]).pipe(
-    debounceTime(0),
-    tap(() => this.loading$.next(true)),
-    switchMap(([keyword, pagination, sort]) => this.getTodoListRequest(keyword, pagination, sort)),
-    startWith({
-      totalCount: 0,
-      data: []
-    }),
-    shareReplay(1)
-  );
+  ]);
 
   todoItems$ = this.store.select(selectTodoListState).pipe(
     map(state => state.todoItems.data)
@@ -97,7 +80,15 @@ export class TodoListComponent implements OnInit {
         { id: '1', text: 'Task 1', done: true, created: (new Date()).getTime() },
         { id: '2', text: 'Task 2', done: false, created: (new Date()).getTime() }
       ]
-    }))
+    }));
+
+    this.todoListQuery$.subscribe(([keyword, pagination, sort]) => {
+      this.store.dispatch(TodoListActions.queryTodoItems({
+        keyword,
+        pagination,
+        sort
+      }));
+    })
   }
 
   setSuggestList(keyword: string) {
