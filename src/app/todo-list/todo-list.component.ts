@@ -20,12 +20,16 @@ import { selectTodoListState } from './todo-list.selectors';
   styleUrls: ['./todo-list.component.css'],
 })
 export class TodoListComponent implements OnInit {
-  keyword$ = new Subject<string>();
-  suggestList$ = this.keyword$.pipe(
-    filter(keyword => keyword.length >= 3),
-    debounceTime(300),
-    distinctUntilChanged(),
-    switchMap(keyword => this.todoListService.getSuggestList(keyword)),
+  // keyword$ = new Subject<string>();
+  // suggestList$ = this.keyword$.pipe(
+  //   filter(keyword => keyword.length >= 3),
+  //   debounceTime(300),
+  //   distinctUntilChanged(),
+  //   switchMap(keyword => this.todoListService.getSuggestList(keyword)),
+  //   startWith([])
+  // );
+  suggestList$ = this.store.select(selectTodoListState).pipe(
+    map(state => state.suggestList),
     startWith([])
   );
 
@@ -97,7 +101,7 @@ export class TodoListComponent implements OnInit {
   }
 
   setSuggestList(keyword: string) {
-    this.keyword$.next(keyword);
+    this.store.dispatch(TodoListActions.querySuggestList({ keyword }));
   }
 
   getTodoListRequest(keyword: string, pagination: PageChangeEvent, sort: SortChangeEvent) {
