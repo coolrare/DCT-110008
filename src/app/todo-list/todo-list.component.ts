@@ -1,3 +1,4 @@
+import { Store } from '@ngrx/store';
 import {
   tap,
   startWith,
@@ -33,6 +34,8 @@ import {
 } from 'rxjs';
 import { Pagination } from './pagination';
 import { FormBuilder, FormControl } from '@angular/forms';
+import * as TodoListActions from './todo-list.actions';
+import { selectTodoItems, selectTodoListState } from './todo-list.selectors';
 
 const betterAutoComplete = (options: {minLength: number, debounce: number, queryFn: (input: string) => Observable<string[]> }) => {
   return (source: Observable<string>) => {
@@ -133,27 +136,46 @@ export class TodoListComponent implements OnInit {
     )
   }
 
-  todoList$ = combineLatest([this.searchByKeyword$, this.sort$, this.pagination$])
-    .pipe(
-      debounceTime(0),
-      tap(() => this.loading$.next(true)),
-      switchMap(([keyword, sort, pagination]) => this.todoListRequest(keyword, pagination, sort)),
-      startWith({
-        totalCount: 0,
-        data: []
-      }),
-      shareReplay(1)
-    );
+  // todoList$ = combineLatest([this.searchByKeyword$, this.sort$, this.pagination$])
+  //   .pipe(
+  //     debounceTime(0),
+  //     tap(() => this.loading$.next(true)),
+  //     switchMap(([keyword, sort, pagination]) => this.todoListRequest(keyword, pagination, sort)),
+  //     startWith({
+  //       totalCount: 0,
+  //       data: []
+  //     }),
+  //     shareReplay(1)
+  //   );
+  // todoList$ = this.store.pipe(
+  //   map()
+  // );
+  todoList$ = this.store.select(selectTodoItems);
 
   constructor(
     private todoListService: TodoListService,
     private dialog: MatDialog,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private store : Store
   ) {}
 
   ngOnChanges() {}
 
   ngOnInit(): void {
+    this.store.select(selectTodoItems).subscribe(data => {
+      console.log(data);
+    });
+
+    this.store.dispatch(TodoListActions.loadDefaultTodos({
+      totalCount: 2,
+      data: [
+        { id: '1', text: 'Task 1', done: false, created: (new Date().getTime())},
+        { id: '2', text: 'Task 2', done: true, created: (new Date().getTime())}
+      ]
+    }));
+
+
+
     // const t$ = timer(0, 1000)
     // const rs = new ReplaySubject(1);
     // t$.subscribe(rs);

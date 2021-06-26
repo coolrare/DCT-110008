@@ -1,3 +1,4 @@
+import { StoreModule } from '@ngrx/store';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -20,6 +21,7 @@ import { TodoListSearchComponent } from './todo-list-search/todo-list-search.com
 import { TodoListAddDialogComponent } from './todo-list-add-dialog/todo-list-add-dialog.component';
 import { EffectsModule } from '@ngrx/effects';
 import { TodoListEffects } from './todo-list.effects';
+import { reducer, todoListFeatureKey } from './todo-list.reducer';
 
 @NgModule({
   declarations: [TodoListComponent, TodoListTableComponent, TodoListSearchComponent, TodoListAddDialogComponent],
@@ -39,6 +41,7 @@ import { TodoListEffects } from './todo-list.effects';
     MatPaginatorModule,
     MatDialogModule,
     MatProgressSpinnerModule,
+    StoreModule.forFeature(todoListFeatureKey, reducer),
     EffectsModule.forFeature([TodoListEffects])
   ],
 })
