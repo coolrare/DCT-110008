@@ -5,13 +5,18 @@
   </button>
 </div>
 
+<!-- (keywordChange)="setSuggestList($event)" -->
+
 <app-todo-list-search
-  [suggestList]="suggestList"
-  (keywordChange)="setSuggestList($event)"
+  [suggestList]="(suggestList$ | async)!"
+  (keywordChange)="keyword$.next($event)"
   (searchClick)="search($event)"></app-todo-list-search>
 
+<!-- [todoList]="(todoList$ | async)?.data || []" -->
+<!-- [todoList]="(items$ | async) || []" -->
+
 <app-todo-list-table
-  [todoList]="(todoList$ | async)?.data || []"
+  [todoList]="(todoList$ | async)!.data"
   [pageIndex]="pagination.pageNumber"
   [pageSize]="pagination.pageSize"
   [totalCount]="totalCount"
