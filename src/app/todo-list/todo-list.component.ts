@@ -1,4 +1,4 @@
-import { tap } from 'rxjs/operators';
+import { tap, startWith, switchMap, map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TodoItemStatusChangeEvent } from './todo-item-status-change-event';
 import { PageChangeEvent } from './page-change-event';
@@ -8,8 +8,9 @@ import { TodoListService } from './todo-list.service';
 import { TodoItem } from './todo-item';
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, of, Subscription, timer } from 'rxjs';
+import { Observable, of, Subscription, timer, Subject } from 'rxjs';
 import { Pagination } from './pagination';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-todo-list',
@@ -17,6 +18,8 @@ import { Pagination } from './pagination';
   styleUrls: ['./todo-list.component.css'],
 })
 export class TodoListComponent implements OnInit {
+  sub = new Subscription();
+
   @Input() data = [];
 
   suggestList: string[] = [];
@@ -37,18 +40,27 @@ export class TodoListComponent implements OnInit {
   loading = false;
 
   todoList$!: Observable<Pagination<TodoItem>>;
-
+  items$!: Observable<TodoItem[]>;
   // counter = 0;
 
   counter$ = timer(0, 1000).pipe(
-    tap(data => console.log(data))
+    // tap(data => console.log(data))
   );
 
-  sub = new Subscription();
+  keyword$ = new Subject<string>();
+  suggestList$ = this.keyword$.pipe(
+    filter(keyword => keyword.length >= 3),
+    debounceTime(1000),
+    distinctUntilChanged(),
+    switchMap(keyword => this.todoListService.getSuggestList(keyword)),
+    startWith([])
+  );
+
 
   constructor(
     private todoListService: TodoListService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private fb: FormBuilder
   ) {
   }
 
@@ -57,17 +69,24 @@ export class TodoListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // var control = this.fb.control('');
+
+    // control.valueChanges
+    //   .pipe(
+    //     switchMap(() => timer(0, 1000))
+    //   )
+    //   .subscribe(result => {
+    //     console.log(result);
+    //   });
+
     const s = timer(0, 1000).subscribe(data => {
-      console.log(data);
+      // console.log(data);
       // this.counter = data;
     });
 
     this.sub.add(s);
 
-    // setTimeout(() => {
-
-    //   this.refreshTodoList();
-    // }, 10);
+    this.refreshTodoList();
   }
 
   ngOnDestroy(): void {
@@ -75,9 +94,10 @@ export class TodoListComponent implements OnInit {
   }
 
   setSuggestList(keyword: string) {
-    this.todoListService.getSuggestList(keyword).subscribe((result) => {
-      this.suggestList = result;
-    });
+    this.keyword$.next(keyword);
+    // this.todoListService.getSuggestList(keyword).subscribe((result) => {
+    //   this.suggestList = result;
+    // });
   }
 
   refreshTodoList() {
@@ -87,7 +107,17 @@ export class TodoListComponent implements OnInit {
           this.keyword,
           this.pagination,
           this.sort
+        )
+        .pipe(
+          startWith({
+            totalCount: 0,
+            data: []
+          })
         );
+
+    this.items$ = this.todoList$.pipe(
+      map(result => result.data)
+    );
     // this.loading = true;
     // this.todoListService
     //   .getTodoList(
