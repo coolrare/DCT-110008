@@ -7,6 +7,8 @@ import {
   debounceTime,
   distinctUntilChanged,
   shareReplay,
+  catchError,
+  finalize,
 } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TodoItemStatusChangeEvent } from './todo-item-status-change-event';
@@ -25,6 +27,8 @@ import {
   Subject,
   BehaviorSubject,
   combineLatest,
+  ReplaySubject,
+  throwError,
 } from 'rxjs';
 import { Pagination } from './pagination';
 import { FormBuilder, FormControl } from '@angular/forms';
@@ -76,6 +80,8 @@ export class TodoListComponent implements OnInit {
     pageSize: 10,
   });
 
+  loading$ = new BehaviorSubject(false);
+
   suggestList$ = this.keyword$.pipe(
     filter((keyword) => keyword.length >= 3),
     debounceTime(1000),
@@ -84,10 +90,29 @@ export class TodoListComponent implements OnInit {
     startWith([])
   );
 
+  todoListRequest = (keyword: string, pagination :PageChangeEvent, sort: SortChangeEvent) => {
+    return this.todoListService.getTodoList(keyword, pagination, sort)
+    .pipe(
+      catchError((error: HttpErrorResponse) => {
+        alert(error.error.message);
+
+        return throwError(error);
+        // return of(null);
+        return of({
+          totalCount: 0,
+          data: []
+        });
+      }),
+      finalize(() => this.loading$.next(false)),
+      // tap(() => this.loading$.next(false))
+    )
+  }
+
   todoList$ = combineLatest([this.searchByKeyword$, this.sort$, this.pagination$])
     .pipe(
       debounceTime(0),
-      switchMap(([keyword, sort, pagination]) => this.todoListService.getTodoList(keyword, pagination, sort)),
+      tap(() => this.loading$.next(true)),
+      switchMap(([keyword, sort, pagination]) => this.todoListRequest(keyword, pagination, sort)),
       startWith({
         totalCount: 0,
         data: []
@@ -104,6 +129,11 @@ export class TodoListComponent implements OnInit {
   ngOnChanges() {}
 
   ngOnInit(): void {
+    // const t$ = timer(0, 1000)
+    // const rs = new ReplaySubject(1);
+    // t$.subscribe(rs);
+    // t$.subscribe(rs);
+
     // var control = this.fb.control('');
 
     // control.valueChanges
@@ -136,16 +166,16 @@ export class TodoListComponent implements OnInit {
   }
 
   refreshTodoList() {
-    this.todoList$ = this.todoListService
-      .getTodoList(this.keyword, this.pagination, this.sort)
-      .pipe(
-        startWith({
-          totalCount: 0,
-          data: [],
-        })
-      );
+    // this.todoList$ = this.todoListService
+    //   .getTodoList(this.keyword, this.pagination, this.sort)
+    //   .pipe(
+    //     startWith({
+    //       totalCount: 0,
+    //       data: [],
+    //     })
+    //   );
 
-    this.items$ = this.todoList$.pipe(map((result) => result.data));
+    // this.items$ = this.todoList$.pipe(map((result) => result.data));
     // this.loading = true;
     // this.todoListService
     //   .getTodoList(
