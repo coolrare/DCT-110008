@@ -9,6 +9,7 @@ import {
   shareReplay,
   catchError,
   finalize,
+  takeUntil,
 } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TodoItemStatusChangeEvent } from './todo-item-status-change-event';
@@ -32,6 +33,21 @@ import {
 } from 'rxjs';
 import { Pagination } from './pagination';
 import { FormBuilder, FormControl } from '@angular/forms';
+
+const betterAutoComplete = (options: {minLength: number, debounce: number, queryFn: (input: string) => Observable<string[]> }) => {
+  return (source: Observable<string>) => {
+    return source.pipe(
+      filter((keyword) => keyword.length >= options.minLength),
+      debounceTime(options.debounce),
+      distinctUntilChanged(),
+      switchMap(options.queryFn),
+      startWith([])
+    )
+  }
+}
+
+const autoUnsubscribe = (destroy$: Observable<any>) => (source: Observable<any>) =>
+  source.pipe(takeUntil(destroy$));
 
 @Component({
   selector: 'app-todo-list',
@@ -81,14 +97,23 @@ export class TodoListComponent implements OnInit {
   });
 
   loading$ = new BehaviorSubject(false);
-
+  destroy$ = new Subject();
   suggestList$ = this.keyword$.pipe(
-    filter((keyword) => keyword.length >= 3),
-    debounceTime(1000),
-    distinctUntilChanged(),
-    switchMap((keyword) => this.todoListService.getSuggestList(keyword)),
-    startWith([])
+    betterAutoComplete({
+      minLength: 3,
+      debounce: 1000,
+      queryFn: (keyword) => this.todoListService.getSuggestList(keyword)
+    }),
+    autoUnsubscribe(this.destroy$)
   );
+
+  // suggestList$ = this.keyword$.pipe(
+  //   filter((keyword) => keyword.length >= 3),
+  //   debounceTime(1000),
+  //   distinctUntilChanged(),
+  //   switchMap((keyword) => this.todoListService.getSuggestList(keyword)),
+  //   startWith([])
+  // );
 
   todoListRequest = (keyword: string, pagination :PageChangeEvent, sort: SortChangeEvent) => {
     return this.todoListService.getTodoList(keyword, pagination, sort)
