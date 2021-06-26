@@ -1155,6 +1155,13 @@
   resolved "https://registry.yarnpkg.com/@ngrx/schematics/-/schematics-12.1.0.tgz#6478fc376840a9f9c4d44a40d513e8aa3463779c"
   integrity sha512-cUL+pzy5jtFUq81B+kETJmca9/KqWatMxNXofdML2dyGGpk/yfs6bV8L/NQWyUxsyc01J+WswocWmFjNde0FYQ==
 
+"@ngrx/store-devtools@12.1.0":
+  version "12.1.0"
+  resolved "https://registry.yarnpkg.com/@ngrx/store-devtools/-/store-devtools-12.1.0.tgz#b547edb6ff9fd3ade4fd303088dbed627484b41d"
+  integrity sha512-O+GfUsYPUrlbGHHcCH0WNkfnWD2TLQmXm2xhR1CkMTr+7YkdOKUZ1a0RwPM4VWuCu5QNVHS8bRS5V3IviiP9tQ==
+  dependencies:
+    tslib "^2.0.0"
+
 "@ngrx/store@^12.1.0":
   version "12.1.0"
   resolved "https://registry.yarnpkg.com/@ngrx/store/-/store-12.1.0.tgz#5e3516f0e6333c7ef49a560df786d4aa87b44a22"
