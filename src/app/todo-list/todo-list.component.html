@@ -1,5 +1,5 @@
 <div class="header">
-  <span class="title">Todo List</span>
+  <span class="title">Todo List ({{ counter$ | async }})</span>
   <button mat-mini-fab color="primary" (click)="displayTodoDialog()">
     <mat-icon>add</mat-icon>
   </button>
@@ -11,7 +11,7 @@
   (searchClick)="search($event)"></app-todo-list-search>
 
 <app-todo-list-table
-  [todoList]="todoList"
+  [todoList]="(todoList$ | async)?.data || []"
   [pageIndex]="pagination.pageNumber"
   [pageSize]="pagination.pageSize"
   [totalCount]="totalCount"

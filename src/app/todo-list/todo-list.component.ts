@@ -1,3 +1,4 @@
+import { tap } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TodoItemStatusChangeEvent } from './todo-item-status-change-event';
 import { PageChangeEvent } from './page-change-event';
@@ -5,8 +6,10 @@ import { SortChangeEvent } from './sort-change-event';
 import { TodoListAddDialogComponent } from './todo-list-add-dialog/todo-list-add-dialog.component';
 import { TodoListService } from './todo-list.service';
 import { TodoItem } from './todo-item';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Observable, of, Subscription, timer } from 'rxjs';
+import { Pagination } from './pagination';
 
 @Component({
   selector: 'app-todo-list',
@@ -14,6 +17,8 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./todo-list.component.css'],
 })
 export class TodoListComponent implements OnInit {
+  @Input() data = [];
+
   suggestList: string[] = [];
 
   totalCount = 0;
@@ -31,13 +36,42 @@ export class TodoListComponent implements OnInit {
 
   loading = false;
 
+  todoList$!: Observable<Pagination<TodoItem>>;
+
+  // counter = 0;
+
+  counter$ = timer(0, 1000).pipe(
+    tap(data => console.log(data))
+  );
+
+  sub = new Subscription();
+
   constructor(
     private todoListService: TodoListService,
     private dialog: MatDialog
-  ) {}
+  ) {
+  }
+
+  ngOnChanges() {
+
+  }
 
   ngOnInit(): void {
-    this.refreshTodoList();
+    const s = timer(0, 1000).subscribe(data => {
+      console.log(data);
+      // this.counter = data;
+    });
+
+    this.sub.add(s);
+
+    // setTimeout(() => {
+
+    //   this.refreshTodoList();
+    // }, 10);
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 
   setSuggestList(keyword: string) {
@@ -47,23 +81,30 @@ export class TodoListComponent implements OnInit {
   }
 
   refreshTodoList() {
-    this.loading = true;
-    this.todoListService
-      .getTodoList(
-        this.keyword,
-        this.pagination,
-        this.sort
-      )
-      .subscribe({
-        next: (result) => {
-          this.totalCount = result.totalCount;
-          this.todoList = result.data;
-          this.loading = false;
-        },
-        error: (error: HttpErrorResponse) => {
-          alert(error.error.message);
-        },
-      });
+    this.todoList$ =
+      this.todoListService
+        .getTodoList(
+          this.keyword,
+          this.pagination,
+          this.sort
+        );
+    // this.loading = true;
+    // this.todoListService
+    //   .getTodoList(
+    //     this.keyword,
+    //     this.pagination,
+    //     this.sort
+    //   )
+    //   .subscribe({
+    //     next: (result) => {
+    //       this.totalCount = result.totalCount;
+    //       this.todoList = result.data;
+    //       this.loading = false;
+    //     },
+    //     error: (error: HttpErrorResponse) => {
+    //       alert(error.error.message);
+    //     },
+    //   });
   }
 
   sortChange(event: SortChangeEvent) {
